@@ -55,11 +55,14 @@ function GAMES202Main() {
 	let floorTransform = setTransform(0, 0, -30, 4, 4, 4);
 	let obj1Transform = setTransform(0, 0, 0, 20, 20, 20);
 	let obj2Transform = setTransform(40, 0, -40, 10, 10, 10);
+	let cirnoTransform = setTransform(-20, -1, 20, 1, 1, 1);
+	let reimuTransform = setTransform(-20, 25, 20, 1, 1, 1);
 
 	loadOBJ(renderer, 'assets/mary/', 'Marry', 'PhongMaterial', obj1Transform);
 	loadOBJ(renderer, 'assets/mary/', 'Marry', 'PhongMaterial', obj2Transform);
 	loadOBJ(renderer, 'assets/floor/', 'floor', 'PhongMaterial', floorTransform);
-	
+	// loadOBJ(renderer, 'assets/cirno/', 'cirno_rr', 'PhongMaterial', cirnoTransform);
+	// loadOBJ(renderer, 'assets/reimu/', 'reimu', 'PhongMaterial', reimuTransform);
 
 	// let floorTransform = setTransform(0, 0, 0, 100, 100, 100);
 	// let cubeTransform = setTransform(0, 50, 0, 10, 50, 10);
