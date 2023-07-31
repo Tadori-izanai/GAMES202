@@ -1,0 +1,64 @@
+Compiling the C compiler identification source file "CMakeCCompilerId.c" failed.
+Compiler: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc 
+Build flags: 
+Id flags:  
+
+The output was:
+1
+ld: library not found for -lSystem
+clang: error: linker command failed with exit code 1 (use -v to see invocation)
+
+
+Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" failed.
+Compiler: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ 
+Build flags: 
+Id flags:  
+
+The output was:
+1
+ld: library not found for -lc++
+clang: error: linker command failed with exit code 1 (use -v to see invocation)
+
+
+Performing C++ SOURCE FILE Test HAVE_GCC_INLINE_ASM_AVX failed with the following output:
+Change Dir: /Users/lxl/Projects/cg/games202/hw2/prt/cmake-build-debug/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Applications/CLion.app/Contents/bin/ninja/mac/ninja cmTC_9c5fe && [1/2] Building CXX object CMakeFiles/cmTC_9c5fe.dir/src.cxx.o
+FAILED: CMakeFiles/cmTC_9c5fe.dir/src.cxx.o 
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DHAVE_GCC_INLINE_ASM_AVX  -std=c++14 -stdlib=libc++ -D_LIBCPP_VERSION -Wno-switch -Wno-tautological-compare -Wno-deprecated-register  -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX13.1.sdk -fcolor-diagnostics -MD -MT CMakeFiles/cmTC_9c5fe.dir/src.cxx.o -MF CMakeFiles/cmTC_9c5fe.dir/src.cxx.o.d -o CMakeFiles/cmTC_9c5fe.dir/src.cxx.o -c /Users/lxl/Projects/cg/games202/hw2/prt/cmake-build-debug/CMakeFiles/CMakeTmp/src.cxx
+/Users/lxl/Projects/cg/games202/hw2/prt/cmake-build-debug/CMakeFiles/CMakeTmp/src.cxx:13:5: error: No GCC style inline asm supported for AVX instructions
+                 #error No GCC style inline asm supported for AVX instructions
+                  ^
+1 error generated.
+ninja: build stopped: subcommand failed.
+
+
+Source file was:
+
+	int main()
+	{
+	 #if defined(__GNUC__) && defined(__SSE2__)
+		 int n   = 0;
+		 int eax = 0;
+		 int edx = 0;
+		 __asm__(
+			 "xgetbv     ;"
+			 "vzeroupper  "
+			 : "=a"(eax), "=d"(edx) : "c"(n) : );
+	 #else
+		 #error No GCC style inline asm supported for AVX instructions
+	 #endif
+	}
+	
+Performing C++ SOURCE FILE Test SUPPORTS_MRTM failed with the following output:
+Change Dir: /Users/lxl/Projects/cg/games202/hw2/prt/cmake-build-debug/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/Applications/CLion.app/Contents/bin/ninja/mac/ninja cmTC_fbb29 && [1/2] Building CXX object CMakeFiles/cmTC_fbb29.dir/src.cxx.o
+FAILED: CMakeFiles/cmTC_fbb29.dir/src.cxx.o 
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ -DSUPPORTS_MRTM  -std=c++11  -std=c++14 -stdlib=libc++ -D_LIBCPP_VERSION  -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX13.1.sdk -fcolor-diagnostics   -mrtm -Werror -MD -MT CMakeFiles/cmTC_fbb29.dir/src.cxx.o -MF CMakeFiles/cmTC_fbb29.dir/src.cxx.o.d -o CMakeFiles/cmTC_fbb29.dir/src.cxx.o -c /Users/lxl/Projects/cg/games202/hw2/prt/cmake-build-debug/CMakeFiles/CMakeTmp/src.cxx
+clang: error: argument unused during compilation: '-mrtm' [-Werror,-Wunused-command-line-argument]
+ninja: build stopped: subcommand failed.
+
+
+Source file was:
+int main() { return 0; }

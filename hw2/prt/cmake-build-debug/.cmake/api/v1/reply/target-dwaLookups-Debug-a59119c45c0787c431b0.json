@@ -1,0 +1,225 @@
+{
+	"artifacts" : 
+	[
+		{
+			"path" : "ext_build/openexr/OpenEXR/IlmImf/dwaLookups"
+		}
+	],
+	"backtrace" : 1,
+	"backtraceGraph" : 
+	{
+		"commands" : 
+		[
+			"ADD_EXECUTABLE",
+			"TARGET_LINK_LIBRARIES",
+			"include_directories",
+			"INCLUDE_DIRECTORIES"
+		],
+		"files" : 
+		[
+			"ext/openexr/OpenEXR/IlmImf/CMakeLists.txt",
+			"ext/openexr/CMakeLists.txt",
+			"ext/openexr/OpenEXR/CMakeLists.txt"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 31,
+				"parent" : 0
+			},
+			{
+				"command" : 1,
+				"file" : 0,
+				"line" : 35,
+				"parent" : 0
+			},
+			{
+				"file" : 1
+			},
+			{
+				"command" : 2,
+				"file" : 1,
+				"line" : 35,
+				"parent" : 3
+			},
+			{
+				"file" : 2
+			},
+			{
+				"command" : 3,
+				"file" : 2,
+				"line" : 48,
+				"parent" : 5
+			}
+		]
+	},
+	"compileGroups" : 
+	[
+		{
+			"compileCommandFragments" : 
+			[
+				{
+					"fragment" : " -std=c++14 -stdlib=libc++ -D_LIBCPP_VERSION -Wno-switch -Wno-tautological-compare -Wno-deprecated-register -g -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX13.1.sdk -fcolor-diagnostics"
+				}
+			],
+			"defines" : 
+			[
+				{
+					"define" : "HAVE_CONFIG_H"
+				},
+				{
+					"define" : "ILM_IMF_TEST_IMAGEDIR=\"/Users/lxl/Projects/cg/games202/hw2/prt/IlmImfTest/\""
+				}
+			],
+			"includes" : 
+			[
+				{
+					"path" : "/Users/lxl/Projects/cg/games202/hw2/prt/cmake-build-debug/ext_build/openexr/OpenEXR/IlmImf"
+				},
+				{
+					"path" : "/Users/lxl/Projects/cg/games202/hw2/prt/ext/openexr/OpenEXR/IlmImf"
+				},
+				{
+					"backtrace" : 4,
+					"path" : "/Users/lxl/Projects/cg/games202/hw2/prt/ext/openexr/IlmBase/Iex"
+				},
+				{
+					"backtrace" : 4,
+					"path" : "/Users/lxl/Projects/cg/games202/hw2/prt/ext/openexr/IlmBase/Imath"
+				},
+				{
+					"backtrace" : 4,
+					"path" : "/Users/lxl/Projects/cg/games202/hw2/prt/ext/openexr/IlmBase/IlmThread"
+				},
+				{
+					"backtrace" : 4,
+					"path" : "/Users/lxl/Projects/cg/games202/hw2/prt/ext/openexr/IlmBase/Half"
+				},
+				{
+					"backtrace" : 4,
+					"path" : "/Users/lxl/Projects/cg/games202/hw2/prt/cmake-build-debug/ext_build/openexr/IlmBase/config"
+				},
+				{
+					"backtrace" : 6,
+					"path" : "/Users/lxl/Projects/cg/games202/hw2/prt/cmake-build-debug/ext_build/openexr/OpenEXR/config"
+				},
+				{
+					"backtrace" : 6,
+					"path" : "/Users/lxl/Projects/cg/games202/hw2/prt/ext/openexr/OpenEXR/IlmImfUtil"
+				},
+				{
+					"backtrace" : 6,
+					"path" : "/Users/lxl/Projects/cg/games202/hw2/prt/ext/openexr/OpenEXR/exrmaketiled"
+				},
+				{
+					"backtrace" : 6,
+					"path" : "/Users/lxl/Projects/cg/games202/hw2/prt/ext/openexr/OpenEXR/exrenvmap"
+				},
+				{
+					"backtrace" : 6,
+					"path" : "/Users/lxl/Projects/cg/games202/hw2/prt/ext/openexr/OpenEXR/exrmakepreview"
+				},
+				{
+					"backtrace" : 6,
+					"path" : "/Users/lxl/Projects/cg/games202/hw2/prt/ext/openexr/OpenEXR/exrmultiview"
+				},
+				{
+					"backtrace" : 6,
+					"path" : "/Users/lxl/Projects/cg/games202/hw2/prt/ext/openexr/OpenEXR/IlmImfFuzzTest"
+				}
+			],
+			"language" : "CXX",
+			"sourceIndexes" : 
+			[
+				0
+			]
+		}
+	],
+	"dependencies" : 
+	[
+		{
+			"backtrace" : 2,
+			"id" : "Half::@bc73201a0ff31525839c"
+		},
+		{
+			"backtrace" : 2,
+			"id" : "Iex::@2d5ce12303fd5a715ea3"
+		},
+		{
+			"backtrace" : 2,
+			"id" : "IlmThread::@ad0fbd93a99e11f50aa5"
+		}
+	],
+	"folder" : 
+	{
+		"name" : "dependencies"
+	},
+	"id" : "dwaLookups::@c7e2e96394a199d2be4c",
+	"link" : 
+	{
+		"commandFragments" : 
+		[
+			{
+				"fragment" : "-std=c++14 -stdlib=libc++ -D_LIBCPP_VERSION -Wno-switch -Wno-tautological-compare -Wno-deprecated-register -g",
+				"role" : "flags"
+			},
+			{
+				"fragment" : "-L/opt/homebrew/opt/opencv@3/lib -stdlib=libc++",
+				"role" : "flags"
+			},
+			{
+				"backtrace" : 2,
+				"fragment" : "ext_build/openexr/IlmBase/Half/libHalf.a",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 2,
+				"fragment" : "ext_build/openexr/IlmBase/IlmThread/libIlmThread.a",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 2,
+				"fragment" : "ext_build/openexr/IlmBase/Iex/libIex.a",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 2,
+				"fragment" : "-lpthread",
+				"role" : "libraries"
+			}
+		],
+		"language" : "CXX"
+	},
+	"name" : "dwaLookups",
+	"nameOnDisk" : "dwaLookups",
+	"paths" : 
+	{
+		"build" : "ext_build/openexr/OpenEXR/IlmImf",
+		"source" : "ext/openexr/OpenEXR/IlmImf"
+	},
+	"sourceGroups" : 
+	[
+		{
+			"name" : "Source Files",
+			"sourceIndexes" : 
+			[
+				0
+			]
+		}
+	],
+	"sources" : 
+	[
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "ext/openexr/OpenEXR/IlmImf/dwaLookups.cpp",
+			"sourceGroupIndex" : 0
+		}
+	],
+	"type" : "EXECUTABLE"
+}

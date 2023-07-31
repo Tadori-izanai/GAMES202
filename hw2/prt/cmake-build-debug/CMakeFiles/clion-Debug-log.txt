@@ -1,0 +1,53 @@
+/Applications/CLion.app/Contents/bin/cmake/mac/bin/cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_MAKE_PROGRAM=/Applications/CLion.app/Contents/bin/ninja/mac/ninja -G Ninja -S /Users/lxl/Projects/cg/games202/hw2/prt -B /Users/lxl/Projects/cg/games202/hw2/prt/cmake-build-debug
+-- The C compiler identification is AppleClang 14.0.0.14000029
+-- The CXX compiler identification is AppleClang 14.0.0.14000029
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Performing Test HAS_CPP14_FLAG
+-- Performing Test HAS_CPP14_FLAG - Success
+-- Performing Test HAS_CPP11_FLAG
+-- Performing Test HAS_CPP11_FLAG - Success
+-- Performing Test HAS_LIBCPP
+-- Performing Test HAS_LIBCPP - Success
+-- Nori: using libc++.
+CMake Deprecation Warning at ext/openexr/IlmBase/CMakeLists.txt:2 (CMAKE_MINIMUM_REQUIRED):
+  Compatibility with CMake < 2.8.12 will be removed from a future version of
+  CMake.
+
+  Update the VERSION argument <min> value or use a ...<max> suffix to tell
+  CMake that the project does not need compatibility with older versions.
+
+
+CMake Deprecation Warning at ext/openexr/OpenEXR/CMakeLists.txt:1 (CMAKE_MINIMUM_REQUIRED):
+  Compatibility with CMake < 2.8.12 will be removed from a future version of
+  CMake.
+
+  Update the VERSION argument <min> value or use a ...<max> suffix to tell
+  CMake that the project does not need compatibility with older versions.
+
+
+-- Found ZLIB: /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX13.1.sdk/usr/lib/libz.tbd (found version "1.2.11") 
+-- Performing Test HAVE_GCC_INLINE_ASM_AVX
+-- Performing Test HAVE_GCC_INLINE_ASM_AVX - Failed
+-- Performing Test HAVE_SYSCONF_NPROCESSORS_ONLN
+-- Performing Test HAVE_SYSCONF_NPROCESSORS_ONLN - Success
+-- TBB: using libc++.
+-- Performing Test SUPPORTS_STDCXX11
+-- Performing Test SUPPORTS_STDCXX11 - Success
+-- Performing Test SUPPORTS_MRTM
+-- Performing Test SUPPORTS_MRTM - Failed
+-- NanoGUI: using OpenGL backend.
+-- NanoGUI: building static library.
+-- Using Cocoa for window creation
+-- NanoGUI: not building the Python plugin.
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /Users/lxl/Projects/cg/games202/hw2/prt/cmake-build-debug
