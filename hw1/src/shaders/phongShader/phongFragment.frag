@@ -29,7 +29,7 @@ varying highp vec3 vNormal;
 #define EPS_PCF 20e-3
 #define EPS_PCSS 10e-3
 #define PCF_FILTER_SIZE 0.01
-#define PARA_BLOCKER_SEARCH 0.005
+#define PARA_BLOCKER_SEARCH 0.05
 #define PARA_GET_FILTER_SIZE 0.05
 //
 
@@ -96,8 +96,8 @@ float findBlocker( sampler2D shadowMap,  vec2 uv, float zReceiver ) {
   float radius = PARA_BLOCKER_SEARCH * zReceiver;
   // radius = 0.005;
 
-  // poissonDiskSamples(0.5 * uv);
-  uniformDiskSamples(uv);
+  poissonDiskSamples(0.5 * uv);
+  // uniformDiskSamples(uv);
   float blockerDepthSum = 0.0;
   int cnt = 0;
 
@@ -120,8 +120,8 @@ float PCF(sampler2D shadowMap, vec2 uv, float depthInScene, float filterSize, fl
   if (filterSize < 0.0) {
     return 1.0;
   }
-  // poissonDiskSamples(uv);
-  uniformDiskSamples(uv);
+  poissonDiskSamples(uv);
+  // uniformDiskSamples(uv);
   int cnt = 0;
   for (int i = 0; i < PCF_NUM_SAMPLES; i += 1) {
     vec2 uvShifted = uv + filterSize * poissonDisk[i];
