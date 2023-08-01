@@ -6,6 +6,7 @@ var envmap = [
 	'assets/cubemap/GraceCathedral',
 	'assets/cubemap/Indoor',
 	'assets/cubemap/Skybox',
+	'assets/cubemap/CornellBox'
 ];
 
 var guiParams = {
@@ -68,6 +69,9 @@ async function GAMES202Main() {
 	let skyBoxTransform = setTransform(0, 50, 50, 150, 150, 150);
 	let boxTransform = setTransform(0, 0, 0, 200, 200, 200);
 	let box2Transform = setTransform(0, -10, 0, 20, 20, 20);
+	//
+	// let maryTransform = setTransform(-20, -30, -50, 15, 15, 15);
+	let maryTransform = setTransform(-20, -70, -50, 40, 40, 40);
 
 	for (let i = 0; i < envmap.length; i++) {
 		let urls = [
@@ -84,43 +88,50 @@ async function GAMES202Main() {
 	// load skybox
 	loadOBJ(renderer, 'assets/testObj/', 'testObj', 'SkyBoxMaterial', skyBoxTransform);
 
-	// file parsing
-	// for (let i = 0; i < envmap.length; i++) {
+	// file parsing (TODO: uncomment)
+	for (let i = 0; i < envmap.length; i++) {
 
-	// 	let val = '';
-	// 	await this.loadShaderFile(envmap[i] + "/transport.txt").then(result => {
-	// 		val = result;
-	// 	});
+		let val = '';
+		await this.loadShaderFile(envmap[i] + "/transport.txt").then(result => {
+		// await this.loadShaderFile("./coef/transport.txt").then(result => {
+			val = result;
+		});
 
-	// 	let preArray = val.split(/[(\r\n)\r\n' ']+/);
-	// 	let lineArray = [];
-	// 	precomputeLT[i] = []
-	// 	for (let j = 1; j <= Number(preArray.length) - 2; j++) {
-	// 		precomputeLT[i][j - 1] = Number(preArray[j])
-	// 	}
-	// 	await this.loadShaderFile(envmap[i] + "/light.txt").then(result => {
-	// 		val = result;
-	// 	});
+		let preArray = val.split(/[(\r\n)\r\n' ']+/);
+		let lineArray = [];
+		precomputeLT[i] = []
+		for (let j = 1; j <= Number(preArray.length) - 2; j++) {
+			precomputeLT[i][j - 1] = Number(preArray[j])
+		}
+		await this.loadShaderFile(envmap[i] + "/light.txt").then(result => {
+		// await this.loadShaderFile("./coef/light.txt").then(result => {
+			val = result;
+		});
 
-	// 	precomputeL[i] = val.split(/[(\r\n)\r\n]+/);
-	// 	precomputeL[i].pop();
-	// 	for (let j = 0; j < 9; j++) {
-	// 		lineArray = precomputeL[i][j].split(' ');
-	// 		for (let k = 0; k < 3; k++) {
-	// 			lineArray[k] = Number(lineArray[k]);
-	// 		}
-	// 		precomputeL[i][j] = lineArray;
-	// 	}
-	// }
+		precomputeL[i] = val.split(/[(\r\n)\r\n]+/);
+		precomputeL[i].pop();
+		for (let j = 0; j < 9; j++) {
+			lineArray = precomputeL[i][j].split(' ');
+			for (let k = 0; k < 3; k++) {
+				lineArray[k] = Number(lineArray[k]);
+			}
+			precomputeL[i][j] = lineArray;
+		}
+	}
 
 	// TODO: load model - Add your Material here
-	// loadOBJ(renderer, 'assets/bunny/', 'bunny', 'addYourPRTMaterial', boxTransform);
-	// loadOBJ(renderer, 'assets/bunny/', 'bunny', 'addYourPRTMaterial', box2Transform);
+	// loadOBJ(renderer, 'assets/bunny/', 'bunny', 'SkyBoxMaterial', boxTransform);
+	// loadOBJ(renderer, 'assets/bunny/', 'bunny', 'SkyBoxMaterial', box2Transform);
+	//
+	// loadOBJ(renderer, 'assets/mary/', 'mary', 'SkyBoxMaterial', maryTransform);
+	loadOBJ(renderer, 'assets/mary/', 'mary', 'PRTMaterial', maryTransform);
+	
 
 	function createGUI() {
 		const gui = new dat.gui.GUI();
 		const panelModel = gui.addFolder('Switch Environemtn Map');
-		panelModel.add(guiParams, 'envmapId', { 'GraceGathedral': 0, 'Indoor': 1, 'Skybox': 2 }).name('Envmap Name');
+		// panelModel.add(guiParams, 'envmapId', { 'GraceGathedral': 0, 'Indoor': 1, 'Skybox': 2 }).name('Envmap Name');
+		panelModel.add(guiParams, 'envmapId', { 'GraceGathedral': 0, 'Indoor': 1, 'Skybox': 2, 'CornellBox': 3 }).name('Envmap Name');
 		panelModel.open();
 	}
 

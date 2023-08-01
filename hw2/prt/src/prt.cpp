@@ -9,6 +9,13 @@
 #include <random>
 #include <stb_image.h>
 
+#include <nori/bsdf.h>
+//#include <nori/common.h>
+
+static const double PI = std::acos(-1);
+static const Eigen::Vector3f eZ(0.0f, 0.0f, 1.0f);
+static const nori::BSDFQueryRecord bRec(eZ, eZ, nori::EMeasure(nori::ESolidAngle));
+
 NORI_NAMESPACE_BEGIN
 
 namespace ProjEnv
@@ -66,7 +73,7 @@ namespace ProjEnv
     float CalcArea(const float &u_, const float &v_, const int &width,
                    const int &height)
     {
-        // transform from [0..res - 1] to [- (1 - 1 / res) .. (1 - 1 / res)]
+        // transform from [0..res - 1] to [- (1 - 1 / res) .. (1 - 1 / res)]    // [0,1] -> [-1,1]
         // ( 0.5 is for texel center addressing)
         float u = (2.0 * (u_ + 0.5) / width) - 1.0;
         float v = (2.0 * (v_ + 0.5) / height) - 1.0;
@@ -128,7 +135,15 @@ namespace ProjEnv
                     Eigen::Vector3f dir = cubemapDirs[i * width * height + y * width + x];
                     int index = (y * width + x) * channel;
                     Eigen::Array3f Le(images[i][index + 0], images[i][index + 1],
-                                      images[i][index + 2]);
+                                      images[i][index + 2]);                // environment radiance
+
+                    float deltaOmega = CalcArea((float) x, (float) y, width, height);
+                    for (int l = 0; l <= (int) SHOrder; l += 1) {
+                        for (int m = -l; m <= l; m += 1) {
+                            double SH = sh::EvalSH(l, m, dir.cast<double>().normalized());
+                            SHCoeffiecents[sh::GetIndex(l, m)] += Le * SH * deltaOmega;
+                        }
+                    }
                 }
             }
         }
@@ -210,13 +225,29 @@ public:
                 {
                     // TODO: here you need to calculate unshadowed transport term of a given direction
                     // TODO: 此处你需要计算给定方向下的unshadowed传输项球谐函数值
-                    return 0;
+                    Eigen::Vector3f normal = n.normalized();
+                    float cosTheta = normal.dot(wi.normalized());
+
+                    if (cosTheta < 0.0) {
+                        return 0.0;
+                    }
+                    float brdf = mesh->getBSDF()->eval(bRec)[0];
+//                    double brdf = 0.5f / PI;
+                    return brdf * cosTheta;
                 }
                 else
                 {
                     // TODO: here you need to calculate shadowed transport term of a given direction
                     // TODO: 此处你需要计算给定方向下的shadowed传输项球谐函数值
-                    return 0;
+                    Eigen::Vector3f normal = n.normalized();
+                    float cosTheta = normal.dot(wi.normalized());
+
+                    if (cosTheta <= 0.0 || scene->rayIntersect(Ray3f(v, wi.normalized()))) {
+                        return 0.0;
+                    }
+                    float brdf = mesh->getBSDF()->eval(bRec)[0];
+//                    double brdf = 0.5f / PI;
+                    return brdf * cosTheta;
                 }
             };
             auto shCoeff = sh::ProjectFunction(SHOrder, shFunc, m_SampleCount);
@@ -275,10 +306,10 @@ public:
         // TODO: you need to delete the following four line codes after finishing your calculation to SH,
         //       we use it to visualize the normals of model for debug.
         // TODO: 在完成了球谐系数计算后，你需要删除下列四行，这四行代码的作用是用来可视化模型法线
-        if (c.isZero()) {
-            auto n_ = its.shFrame.n.cwiseAbs();
-            return Color3f(n_.x(), n_.y(), n_.z());
-        }
+//        if (c.isZero()) {
+//            auto n_ = its.shFrame.n.cwiseAbs();
+//            return Color3f(n_.x(), n_.y(), n_.z());
+//        }
         return c;
     }
 

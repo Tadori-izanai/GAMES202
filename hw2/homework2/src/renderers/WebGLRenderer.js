@@ -60,9 +60,15 @@ class WebGLRenderer {
                     }
 
                     // Bonus - Fast Spherical Harmonic Rotation
-                    //let precomputeL_RGBMat3 = getRotationPrecomputeL(precomputeL[guiParams.envmapId], cameraModelMatrix);
-                    
-                    
+                    // let precomputeL_RGBMat3 = getRotationPrecomputeL(precomputeL[guiParams.envmapId], cameraModelMatrix);
+                    let Mat3Value = getMat3ValueFromRGB(precomputeL[guiParams.envmapId])
+                    if (k == 'uPrecomputeLR') {
+                        gl.uniformMatrix3fv(this.meshes[i].shader.program.uniforms[k], false, Mat3Value[0]);
+                    } else if (k == 'uPrecomputeLG') {
+                        gl.uniformMatrix3fv(this.meshes[i].shader.program.uniforms[k], false, Mat3Value[1]);
+                    } else if (k == 'uPrecomputeLB') {
+                        gl.uniformMatrix3fv(this.meshes[i].shader.program.uniforms[k], false, Mat3Value[2]);
+                    }  
                 }
 
                 this.meshes[i].draw(this.camera);
