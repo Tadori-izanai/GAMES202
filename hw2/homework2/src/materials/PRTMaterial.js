@@ -4,7 +4,7 @@ class PRTMaterial extends Material {
             'uPrecomputeLR': {type: 'precomputeL', value: null},
             'uPrecomputeLG': {type: 'precomputeL', value: null},
             'uPrecomputeLB': {type: 'precomputeL', value: null},
-            'uMoveWithCamera': { type: 'updatedInRealTime', value: null }
+            // 'uMoveWithCamera': { type: 'updatedInRealTime', value: null }
         }, [
             'aPrecomputeLT'
         ], vertexShader, fragmentShader, null);

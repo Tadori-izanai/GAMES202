@@ -50,7 +50,7 @@ class WebGLRenderer {
                 for (let k in this.meshes[i].material.uniforms) {
 
                     let cameraModelMatrix = mat4.create();
-                    //mat4.fromRotation(cameraModelMatrix, timer, [0, 1, 0]);
+                    mat4.fromRotation(cameraModelMatrix, timer * 5, [0, 1, 0]);         // todo(bonus): uncomment it
 
                     if (k == 'uMoveWithCamera') { // The rotation of the skybox
                         gl.uniformMatrix4fv(
@@ -60,15 +60,17 @@ class WebGLRenderer {
                     }
 
                     // Bonus - Fast Spherical Harmonic Rotation
-                    // let precomputeL_RGBMat3 = getRotationPrecomputeL(precomputeL[guiParams.envmapId], cameraModelMatrix);
-                    let Mat3Value = getMat3ValueFromRGB(precomputeL[guiParams.envmapId])
+                    let precomputeL_RGBMat3 = getRotationPrecomputeL(precomputeL[guiParams.envmapId], cameraModelMatrix);
+                    // let precomputeL_RGBMat3 = getMat3ValueFromRGB(precomputeL[guiParams.envmapId])
+
+                    console.log(precomputeL_RGBMat3[1]);
                     if (k == 'uPrecomputeLR') {
-                        gl.uniformMatrix3fv(this.meshes[i].shader.program.uniforms[k], false, Mat3Value[0]);
+                        gl.uniformMatrix3fv(this.meshes[i].shader.program.uniforms[k], false, precomputeL_RGBMat3[0]);
                     } else if (k == 'uPrecomputeLG') {
-                        gl.uniformMatrix3fv(this.meshes[i].shader.program.uniforms[k], false, Mat3Value[1]);
+                        gl.uniformMatrix3fv(this.meshes[i].shader.program.uniforms[k], false, precomputeL_RGBMat3[1]);
                     } else if (k == 'uPrecomputeLB') {
-                        gl.uniformMatrix3fv(this.meshes[i].shader.program.uniforms[k], false, Mat3Value[2]);
-                    }  
+                        gl.uniformMatrix3fv(this.meshes[i].shader.program.uniforms[k], false, precomputeL_RGBMat3[2]);
+                    }
                 }
 
                 this.meshes[i].draw(this.camera);
