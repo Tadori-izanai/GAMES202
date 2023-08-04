@@ -259,6 +259,22 @@ public:
         if (m_Type == Type::Interreflection)
         {
             // TODO: leave for bonus
+            for (int i = 0; i < mesh->getVertexCount(); i += 1) {
+                const Point3f &v = mesh->getVertexPositions().col(i);
+                const Normal3f &n = mesh->getVertexNormals().col(i);
+                Eigen::Vector3f normal = n.normalized();
+                float brdf = mesh->getBSDF()->eval(bRec)[0];
+
+                auto shCoeff = getInterReflectionSH(scene, v, normal, brdf, 0);
+                for (int j = 0; j < SHCoeffLength; j += 1) {
+                    m_TransportSHCoeffs.col(i).coeffRef(j) += (*shCoeff)[j];
+                }
+
+                if (i % 100 == 0) {
+                    std::cout << "computing inter-reflection light transfer SH coefficients: "
+                              << (i + 1) << " / " << mesh->getVertexCount() << std::endl;
+                }
+            }
         }
 
         // Save in face format
@@ -325,6 +341,77 @@ private:
     std::string m_CubemapPath;
     Eigen::MatrixXf m_TransportSHCoeffs;
     Eigen::MatrixXf m_LightCoeffs;
+
+    /**
+     * Returns the SH coefficients (inter-reflection term) of pos
+     * @param scene The scene
+     * @param pos The shading point
+     * @param normal The normal of shading point
+     * @param brdf The BRDF of the shading point
+     * @param depth the number of light bounces
+     */
+    std::unique_ptr<std::vector<double>> getInterReflectionSH(
+        const Scene *scene, const Point3f &pos, const Eigen::Vector3f &normal,
+        float brdf, int depth) const
+    {
+        auto coeffs = std::make_unique<std::vector<double>>();
+        coeffs->resize(SHCoeffLength, 0.0);
+
+        if (depth == m_Bounce) {
+            return coeffs;
+        }
+
+        // copy from spherical_harmonics.cc
+        std::random_device rd;
+        std::mt19937 gen(rd());
+        std::uniform_real_distribution<> rng(0.0, 1.0);
+        const int sample_side = static_cast<int>(floor(sqrt(m_SampleCount)));
+        for (int t = 0; t < sample_side; t++) {
+            for (int p = 0; p < sample_side; p++) {
+                double alpha = (t + rng(gen)) / sample_side;
+                double beta = (p + rng(gen)) / sample_side;
+                double phi = 2.0 * M_PI * beta;
+                double theta = acos(2.0 * alpha - 1.0);
+        // copy end
+                Eigen::Vector3f omegaI = sh::ToVector(phi, theta).cast<float>();
+                omegaI.normalize();
+
+                float cosTheta = normal.dot(omegaI);
+                Intersection its;
+                if (cosTheta <= 0.0 || !scene->rayIntersect(Ray3f(pos, omegaI), its)) {
+                    continue;
+                }
+
+                const Mesh *itsMesh = its.mesh;
+                const Point3f itsPos = its.p;
+                const Vector3f itsBary = its.bary;
+                const Point3f itsIndices = its.tri_index;
+
+                Eigen::Vector3f itsNormal
+                    = itsMesh->getVertexNormals().col(itsIndices.x()).normalized() * itsBary.x()
+                    + itsMesh->getVertexNormals().col(itsIndices.y()).normalized() * itsBary.y()
+                    + itsMesh->getVertexNormals().col(itsIndices.z()).normalized() * itsBary.z();
+                itsNormal.normalize();
+                float itsBrdf = itsMesh->getBSDF()->eval(bRec)[0];
+
+                auto itsInterReflectionSH
+                    = getInterReflectionSH(scene, itsPos, itsNormal, itsBrdf, depth + 1);
+
+                for (int i = 0; i < SHCoeffLength; i += 1) {
+                    double itsDirectSH
+                        = m_TransportSHCoeffs.col(itsIndices.x()).coeffRef(i) * itsBary.x()
+                        + m_TransportSHCoeffs.col(itsIndices.y()).coeffRef(i) * itsBary.y()
+                        + m_TransportSHCoeffs.col(itsIndices.z()).coeffRef(i) * itsBary.z();
+                    (*coeffs)[i] += (itsDirectSH + (*itsInterReflectionSH)[i]) * brdf * cosTheta;
+                }
+            }
+        }
+
+        for (int i = 0; i < SHCoeffLength; i += 1) {
+            (*coeffs)[i] /= sample_side * sample_side;
+        }
+        return coeffs;
+    }
 };
 
 NORI_REGISTER_CLASS(PRTIntegrator, "prt");
