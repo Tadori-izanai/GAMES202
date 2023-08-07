@@ -20,9 +20,8 @@ varying highp vec4 vPosWorld;
 #define INV_TWO_PI 0.15915494309
 
 // my constants
-#define EPS 0.01
-#define STEP 0.05
-#define SPP 16
+#define EPS 1.0
+#define STEP 0.1
 //
 
 float Rand1(inout float p) {
@@ -127,9 +126,7 @@ vec3 GetGBufferDiffuse(vec2 uv) {
  * uv is in screen space, [0, 1] x [0, 1].
  *
  */
-vec3 EvalDiffuse(vec3 wi, vec3 wo, vec2 uv) {           // TODO
-//  vec3 L = vec3(0.0);
-//  return L;
+vec3 EvalDiffuse(vec3 wi, vec3 wo, vec2 uv) {
   vec3 normal = GetGBufferNormalWorld(uv);
   if (dot(wi, normal) <= 0.0) {
     return vec3(0.0);
@@ -143,15 +140,13 @@ vec3 EvalDiffuse(vec3 wi, vec3 wo, vec2 uv) {           // TODO
  * uv is in screen space, [0, 1] x [0, 1].
  *
  */
-vec3 EvalDirectionalLight(vec2 uv) {                    // TODO
-//  vec3 Le = vec3(0.0);
-//  return Le;
+vec3 EvalDirectionalLight(vec2 uv) {
   float visibility = GetGBufferuShadow(uv);
   return uLightRadiance * visibility;
 }
 
 bool isInScreen(vec2 uv, float depth) {
-//  if (abs(depth) >= 1.0) {
+//  if (abs(depth) >= 1e3) {
 //    return false;
 //  }
   float u = uv.x;
@@ -161,16 +156,15 @@ bool isInScreen(vec2 uv, float depth) {
 
 bool intersects(vec2 uv, float depth) {
   float w = GetGBufferDepth(uv);
-//  return abs(depth - w) < EPS;
+  // return abs(depth - w) < STEP * 2.0;
   return depth > w + 1e-4;
 }
 
-bool RayMarch(vec3 ori, vec3 dir, out vec3 hitPos) {    // TODO
-//  return false;
+bool RayMarch(vec3 ori, vec3 dir, out vec3 hitPos) {
   vec3 d = normalize(dir);
   float t = 0.0;
 
-  for (int i = 0; i < 114; i += 1) {
+  for (int i = 0; i < 144; i += 1) {
     vec3 currPos = ori + t * d;
     vec2 uv = GetScreenCoordinate(currPos);
     float depth = GetDepth(currPos);
@@ -203,9 +197,10 @@ void main() {
   L = brdf * li;
   // Indirect illumination
   vec3 indirectL = vec3(0.0);
-  for (int i = 0; i < SPP; i += 1) {
+  for (int i = 0; i < SAMPLE_NUM; i += 1) {
     float pdf;
     vec3 dirSample = SampleHemisphereCos(s, pdf);
+//    vec3 dirSample = SampleHemisphereUniform(s, pdf);
     vec3 normal = GetGBufferNormalWorld(uv);
     vec3 b1;
     vec3 b2;
@@ -221,8 +216,8 @@ void main() {
       vec3 hitBRDF = EvalDiffuse(uLightDir, vec3(0.0), hitUV);
       indirectL += EvalDiffuse(dir, vec3(0.0), uv) / pdf * hitBRDF * hitDirectL;
     }
-    indirectL /= float(SPP);
   }
+  indirectL /= float(SAMPLE_NUM);
   L += indirectL;
   // end
 
