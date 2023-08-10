@@ -42,6 +42,7 @@ samplePoints squareToCosineHemisphere(int sample_count){
     return samlpeList;
 }
 
+/** Calculates the normal distribution D_GGX(h) */
 float DistributionGGX(Vec3f N, Vec3f H, float roughness)
 {
     float a = roughness*roughness;
@@ -66,6 +67,7 @@ float GeometrySchlickGGX(float NdotV, float roughness) {
     return nom / denom;
 }
 
+/** Calculates the shadowing-masking term G(i, o, h) = G(i dot h, o dot h) */
 float GeometrySmith(float roughness, float NoV, float NoL) {
     float ggx2 = GeometrySchlickGGX(NoV, roughness);
     float ggx1 = GeometrySchlickGGX(NoL, roughness);
@@ -73,17 +75,42 @@ float GeometrySmith(float roughness, float NoV, float NoL) {
     return ggx1 * ggx2;
 }
 
+// calculates the Schlick Fresnel term
+Vec3f schlickFresnel(Vec3f r0, float cosTheta) {
+    return r0 + (Vec3f(1.0f) - r0) * std::pow((1 - cosTheta), 5);
+}
+
+/** Calculates the E(V) */
 Vec3f IntegrateBRDF(Vec3f V, float roughness, float NdotV) {
     float A = 0.0;
     float B = 0.0;
     float C = 0.0;
     const int sample_count = 1024;
     Vec3f N = Vec3f(0.0, 0.0, 1.0);
+
+    // reflectance of vertical incidence
+    Vec3f R = Vec3f(1.0);   // 由于我们要测总能量，Fresnel term 是取 1 的（
     
     samplePoints sampleList = squareToCosineHemisphere(sample_count);
     for (int i = 0; i < sample_count; i++) {
-      // TODO: To calculate (fr * ni) / p_o here
-      
+        // TODO: To calculate (fr * ni) / p_o here
+        Vec3f L = normalize(sampleList.directions[i]);
+        float pdf = sampleList.PDFs[i];
+        Vec3f h = normalize(V + L);
+
+        float dotNL = std::max(dot(N, L), 0.0f);
+        float dotNV = std::max(dot(N, V), 0.0f);
+        float dotHL = std::max(dot(h, L), 0.0f);
+
+        // calculates brdf
+        Vec3f fresnel = schlickFresnel(R, dotHL);
+        float normalDistribution = DistributionGGX(N, h, roughness);
+        float geometry = GeometrySmith(roughness, dotNL, dotNV);
+        Vec3f brdf = fresnel * normalDistribution * geometry / (4.0f * dotNL * dotNV);
+
+        A += brdf.x * dotNL / pdf;
+        B += brdf.y * dotNL / pdf;
+        C += brdf.z * dotNL / pdf;
     }
 
     return {A / sample_count, B / sample_count, C / sample_count};
