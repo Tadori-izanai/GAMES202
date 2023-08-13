@@ -168,3 +168,14 @@ class Matrix4x4 {
     friend Matrix4x4 Inverse(const Matrix4x4 &mat);
     friend Matrix4x4 Transpose(const Matrix4x4 &mat);
 };
+
+inline Float3 safeNormalize(const Float3 &a) {
+    if (Length(a) < 1e-7) {
+        return {};
+    }
+    return Normalize(a);
+}
+
+inline Float3 clamp(const Float3 &v, const Float3 &l, const Float3 &r) {
+    return Max(l, Min(r, v));
+}
