@@ -9,7 +9,7 @@ void Denoiser::Reprojection(const FrameInfo &frameInfo) {
         m_preFrameInfo.m_matrix[m_preFrameInfo.m_matrix.size() - 1];
     Matrix4x4 preWorldToCamera =
         m_preFrameInfo.m_matrix[m_preFrameInfo.m_matrix.size() - 2];
-#pragma omp parallel for
+#pragma omp parallel for collapse(2) shared(height, width, frameInfo, preWorldToScreen) default(none)
     for (int y = 0; y < height; y++) {
         for (int x = 0; x < width; x++) {
             // TODO: Reproject
@@ -47,7 +47,7 @@ void Denoiser::TemporalAccumulation(const Buffer2D<Float3> &curFilteredColor) {
     int height = m_accColor.m_height;
     int width = m_accColor.m_width;
     int kernelRadius = 3;
-#pragma omp parallel for
+#pragma omp parallel for collapse(2) shared(height, width, curFilteredColor, kernelRadius) default(none)
     for (int y = 0; y < height; y++) {
         for (int x = 0; x < width; x++) {
             if (!m_valid(x, y)) {
@@ -60,6 +60,7 @@ void Denoiser::TemporalAccumulation(const Buffer2D<Float3> &curFilteredColor) {
             float cnt = 0.0f;
             Float3 sumSamples(0.0f);
             Float3 sumSampleSquares(0.0f);
+            Float3 sumDiffSquare(0.0f); //
             for (int dx = -kernelRadius; dx <= kernelRadius; dx += 1) {
                 for (int dy = -kernelRadius; dy <= kernelRadius; dy += 1) {
                     int xx = x + dx;
@@ -70,11 +71,13 @@ void Denoiser::TemporalAccumulation(const Buffer2D<Float3> &curFilteredColor) {
                     auto c = curFilteredColor(xx, yy);
                     sumSamples += c;
                     sumSampleSquares += c * c;
+                    sumDiffSquare += Sqr(c - curFilteredColor(x, y));
                     cnt += 1.0f;
                 }
             }
             auto mu = sumSamples / cnt;
-            auto sigma = SafeSqrt((sumSampleSquares - mu * cnt) / (cnt - 1.0f));
+//            auto sigma = SafeSqrt((sumSampleSquares - mu * cnt) / (cnt - 1.0f));
+            auto sigma = SafeSqrt(sumDiffSquare / cnt);
             color = clamp(color, mu - sigma * m_colorBoxK, mu + sigma * m_colorBoxK);
 
             // TODO: Exponential moving average
@@ -91,7 +94,7 @@ Buffer2D<Float3> Denoiser::Filter(const FrameInfo &frameInfo) {
     int width = frameInfo.m_beauty.m_width;
     Buffer2D<Float3> filteredImage = CreateBuffer2D<Float3>(width, height);
     int kernelRadius = 16;
-#pragma omp parallel for
+#pragma omp parallel for collapse(2) shared(height, width, filteredImage, frameInfo, kernelRadius) default(none)
     for (int y = 0; y < height; y++) {
         for (int x = 0; x < width; x++) {
             // TODO: Joint bilateral filter
@@ -159,8 +162,10 @@ Buffer2D<Float3> Denoiser::waveletFilter(const FrameInfo &frameInfo) {
     int gap = 1;
     int passes = 5;
 
-#pragma omp parallel for
+//#pragma omp parallel for
     while (passes--) {
+#pragma omp parallel for collapse(2) shared(height, width, filteredImage, frameInfo, kernelRadius,\
+preFilteredImage, gap, mask) default(none)
         for (int y = 0; y < height; y += 1) {
             for (int x = 0; x < width; x += 1) {
                 float sumOfWeight = 0.0f;

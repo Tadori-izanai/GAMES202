@@ -40,3 +40,5 @@ endif()
 ########################################
 
 add_executable(Denoise ${SOURCE_FILE})
+
+target_link_libraries(Denoise PUBLIC OpenMP::OpenMP_CXX)
